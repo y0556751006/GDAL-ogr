@@ -1,10 +1,8 @@
 from osgeo import ogr
-from django.contrib.gis.geos import Point
-import sys
-from osgeo import osr
 
-fileName = "data/AFG_adm2.shp"
+fileName = "exe1/data/AFG_adm2.shp"
 gdb = ogr.Open(fileName, 1)
+print(gdb)
 layer = gdb.GetLayer(0)
 
 def getRing(f):
@@ -41,7 +39,6 @@ def printDetails():
         print("NAME_2: ", getName_2(f))
         #א4
         print("vertices: ", getPoints(f))
-        print("neighbors: ", f.GetField("neighbors"))
 
 #משימה ב
 def createField(name):
