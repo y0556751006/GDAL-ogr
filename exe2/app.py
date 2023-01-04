@@ -9,7 +9,6 @@ import numpy as np
 def getSizeOfRaster(fileUrl):
     raster = gdal.Open(fileUrl)
     xres, yres = raster.GetGeoTransform()[1:6:4]
-    print(xres, yres)
     width = raster.RasterXSize * xres
     height = raster.RasterYSize * yres
     return width * height
@@ -68,7 +67,6 @@ def findTheWay(arrayMask):
     maxArr = []
     arr = []
     tempArr = []
-    print(len(tempArr))
     for i in range(len(arrayMask)):
         for j in range(len(arrayMask[i])):
             if (arrayMask[i][j] == 1):
