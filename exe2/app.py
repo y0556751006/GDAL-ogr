@@ -114,7 +114,7 @@ def markTheWay(arrayMask):
     return arrayMask
 
 
-def getTheWay(raster):
+def getWay(raster):
     # raster = convertToTiff(raster)
     src = gdal.Open(raster, 1)
     src.CreateMaskBand(gdal.GMF_NODATA)
@@ -124,4 +124,4 @@ def getTheWay(raster):
     maskRaster.GetRasterBand(1).WriteArray(arrMask)
 
 
-getTheWay("exe2/data/pic4.tif")
+getWay("exe2/data/pic4.tif")
