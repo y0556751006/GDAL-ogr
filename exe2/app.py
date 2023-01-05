@@ -1,3 +1,4 @@
+from PIL import Image
 from osgeo import gdal
 import numpy as np
 
@@ -5,9 +6,11 @@ import numpy as np
 
 # a
 
-
+    
 def getSizeOfRaster(fileUrl):
     raster = gdal.Open(fileUrl)
+    if raster is None:
+        return "No such file or directory"
     xres, yres = raster.GetGeoTransform()[1:6:4]
     width = raster.RasterXSize * xres
     height = raster.RasterYSize * yres
@@ -29,32 +32,58 @@ print(getTheBiggestRaster("exe2/data/pic1.jpg", "exe2/data/pic2.jpg"))
 
 
 def mergeRasters(raster1, raster2):
-    newRaster1 = cropAndCreateRaster(raster1, (0, 0), (2560, 720))
-    newRaster2 = cropAndCreateRaster(raster2, (0, 0), (2560, 720))
-    # newRaster2=cropAndCreateRaster(raster2, (0, 0), (3968, 1488))
-    filesToMerge = [newRaster1, newRaster2]
-    gdal.Warp("output.jpg", filesToMerge, format="JPEG",
-              options=["COMPRESS=LZW", "TILED=YES"])
+    src=gdal.Open(raster1)
+    print(src.GetMetadata().values)
+    files_to_mosaic = [raster1, raster2]
+    g = gdal.Warp("output.jpg", files_to_mosaic, format="TIFF") 
+    # image1 = Image.open(raster1)
+    # # image1.show()
+    # image2 = Image.open(raster2)
+    # # image2.show()
+    # # image1 = image1.resize((426, 240))
+    # image1_size = image1.size
+    # image2_size = image2.size
+    # print('image1_size', image1_size)
+    # new_image = Image.new(
+    #     'RGB', (image1_size[0], 2*image1_size[1]), (250, 250, 250))
+    # new_image.paste(image1, (0, 0))
+    # new_image.paste(image2, (0, image1_size[1]))
+    # new_image.save("merged_image.jpg", "JPEG")
 
 
 def cropAndCreateRaster(raster, point1, point2):
     upper_left_x, upper_left_y = point1
     lower_right_x, lower_right_y = point2
     window = (upper_left_x, upper_left_y, lower_right_x, lower_right_y)
-    gdal.Translate(raster.split(".")[0]+"crop.jpg", raster, projWin=window)
-    return raster.split(".")[0]+"crop.jpg"
+    cropRaster=raster.split(".")[0]+"crop.jpg"
+    gdal.Translate(cropRaster, raster, projWin=window)
+    if gdal.Open(cropRaster) != None:
+        return cropRaster
+    return "Failed"
 
-# mergeRasters("exe2/data/pic2.jpg", "exe2/data/pic3.jpg")
+
+def newRaster(raster1, raster2):
+    newRaster1 = cropAndCreateRaster(raster1, (0, 0), (2560, 720))
+    newRaster2 = cropAndCreateRaster(raster2, (0, 0), (2560, 720))
+    # newRaster2=cropAndCreateRaster(raster2, (0, 0), (3968, 1488))
+    mergeRasters(newRaster1, newRaster2)
+
+
+# newRaster("exe2/data/pic2.jpg", "exe2/data/pic3.jpg")
+newRaster("exe2/data/data1.jpg", "exe2/data/data2.jpg")
 
 # משימה ב
 
 
 def convertToTiff(raster):
     src = gdal.Open(raster)
+    if src is None:
+        return "No such file or directory"
     newRaster = raster.split(".")[0]+".tif"
     gdal.Translate(newRaster, src)
-    return newRaster
-
+    if gdal.Open(newRaster) != None:
+        return newRaster
+    return "Failed"
 
 def getColor(j):
     if all(element == j[0] for element in j):
@@ -86,6 +115,8 @@ def findTheWay(arrayMask):
 
 def SetDataToMask(raster, mask):
     ds = gdal.Open(mask)
+    if ds is None:
+        return "No such file or directory"
     arrayMask = ds.ReadAsArray()
     src = gdal.Open(raster)
     band1 = src.GetRasterBand(1).ReadAsArray()
@@ -102,9 +133,8 @@ def SetDataToMask(raster, mask):
 
 def markTheWay(arrayMask):
     way = findTheWay(arrayMask)
-    raw = way[0][0]
     for i in range(len(way)):
-        arrayMask[raw][i] = 2
+        arrayMask[way[0][0]][way[0][1]+i] = 2
     for i in range(len(arrayMask)):
         for j in range(len(arrayMask[i])):
             if (arrayMask[i][j] == 2):
@@ -114,9 +144,9 @@ def markTheWay(arrayMask):
 
 def getWay(raster):
     # raster = convertToTiff(raster)
-    src = gdal.Open(raster, 1)
+    src = gdal.Open(raster)
     src.CreateMaskBand(gdal.GMF_NODATA)
-    maskRaster = gdal.Open("exe2/data/pic4.tif.msk", 1)
+    maskRaster = gdal.Open(raster+".msk", 1)
     arrayMask = SetDataToMask(raster, raster+".msk")
     arrMask = markTheWay(arrayMask)
     maskRaster.GetRasterBand(1).WriteArray(arrMask)
