@@ -30,25 +30,29 @@ print(getTheBiggestRaster("exe2/data/pic1.jpg", "exe2/data/pic2.jpg"))
 
 # b
 
+def convertToJpg(raster1,raster2):
+    options_list = [
+    '-ot Byte',
+    '-of JPEG',
+    '-b 1',
+    '-scale'
+    ]           
+    options_string = " ".join(options_list)
+    gdal.Translate(
+        raster1,
+        raster1.split(".")[0]+".tif",
+        options=options_string
+    )
+    gdal.Translate(
+        raster2,
+        raster2.split(".")[0]+".tif",
+        options=options_string
+    )
+
 
 def mergeRasters(raster1, raster2):
-    src=gdal.Open(raster1)
-    print(src.GetMetadata().values)
-    files_to_mosaic = [raster1, raster2]
-    g = gdal.Warp("output.jpg", files_to_mosaic, format="TIFF") 
-    # image1 = Image.open(raster1)
-    # # image1.show()
-    # image2 = Image.open(raster2)
-    # # image2.show()
-    # # image1 = image1.resize((426, 240))
-    # image1_size = image1.size
-    # image2_size = image2.size
-    # print('image1_size', image1_size)
-    # new_image = Image.new(
-    #     'RGB', (image1_size[0], 2*image1_size[1]), (250, 250, 250))
-    # new_image.paste(image1, (0, 0))
-    # new_image.paste(image2, (0, image1_size[1]))
-    # new_image.save("merged_image.jpg", "JPEG")
+    g = gdal.Warp("exe2/data/output.jpg", [raster1,raster2])
+    g = None
 
 
 def cropAndCreateRaster(raster, point1, point2):
@@ -63,14 +67,13 @@ def cropAndCreateRaster(raster, point1, point2):
 
 
 def newRaster(raster1, raster2):
-    newRaster1 = cropAndCreateRaster(raster1, (0, 0), (2560, 720))
-    newRaster2 = cropAndCreateRaster(raster2, (0, 0), (2560, 720))
-    # newRaster2=cropAndCreateRaster(raster2, (0, 0), (3968, 1488))
+    newRaster1 = cropAndCreateRaster(raster1,(696278.000, 3668042.000),( 700374.000,3665994.000))
+    newRaster2 = cropAndCreateRaster(raster2,(700373.500, 3663946.500),(704469.500,3661898.500))
     mergeRasters(newRaster1, newRaster2)
 
 
-# newRaster("exe2/data/pic2.jpg", "exe2/data/pic3.jpg")
-newRaster("exe2/data/data1.jpg", "exe2/data/data2.jpg")
+newRaster("exe2/data/p1.jpg", "exe2/data/p2.jpg")
+# convertToJpg("exe2/data/p1.jpg", "exe2/data/p2.jpg")
 
 # משימה ב
 
