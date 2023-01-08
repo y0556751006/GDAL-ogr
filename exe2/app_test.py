@@ -13,6 +13,7 @@ def test_convert():
 
 def test_big_raster():
     assert getTheBiggestRaster("exe2/data/pic1.jpg", "exe2/data/pic2.jpg") == 1
+    assert getTheBiggestRaster("exe2/data/pic2.jpg", "exe2/data/pic1.jpg") == 2
 
 
 def test_crop_raster():

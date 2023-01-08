@@ -58,7 +58,7 @@ def distance():
     createField("distance")
     geometry = returnFeatureByName("Char Burjak")
     for f in layer:
-        print(geometry.GetGeometryRef().Distance(f.GetGeometryRef()))
+        # print(geometry.GetGeometryRef().Distance(f.GetGeometryRef()))
         if(geometry.GetGeometryRef().Distance(f.GetGeometryRef())<1):
             newField("distance", 1, f)
         else:
@@ -75,8 +75,8 @@ def neighborsSum():
                 continue
             if geomes[i].Touches(geomes[j]):
                 counter += 1
-                print('Neighbor: ', i, j)
-        print(counter)
+                # print('Neighbor: ', i, j)
+        # print(counter)
         newField("neighbors", counter, layer[i])
 
 #משימה ג
