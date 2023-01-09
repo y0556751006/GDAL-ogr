@@ -1,4 +1,3 @@
-from PIL import Image
 from osgeo import gdal
 import numpy as np
 
@@ -40,18 +39,18 @@ def convertToJpg(raster1,raster2):
     options_string = " ".join(options_list)
     gdal.Translate(
         raster1,
-        raster1.split(".")[0]+".tif",
-        options=options_string
+        raster1.split(".")[0] + ".tif",
+        options = options_string
     )
     gdal.Translate(
         raster2,
-        raster2.split(".")[0]+".tif",
-        options=options_string
+        raster2.split(".")[0] + ".tif",
+        options = options_string
     )
 
 
 def mergeRasters(raster1, raster2):
-    g = gdal.Warp("exe2/data/output.jpg", [raster1,raster2])
+    g = gdal.Warp("exe2/data/output.jpg", [raster1, raster2])
     g = None
 
 
