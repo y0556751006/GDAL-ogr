@@ -10,7 +10,7 @@ def test_get_fid():
     assert getFid(f) == 11
 
 def test_get_NAME_2():
-    assert getName_2.__eq__('Wakhan')
+    assert getName_2(f).__eq__('Wakhan')
 
 def test_by_name():
     assert returnFeatureByName("Wakhan").__eq__(f) 
