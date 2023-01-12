@@ -18,7 +18,7 @@ def test_big_raster():
 
 def test_crop_raster():
     assert cropAndCreateRaster(
-        "exe2/data/data1.jpg", (0, 0), (2560, 720)) == "exe2/data/data1crop.jpg"
+        "exe2/data/p1.jpg", (696278.000, 3668042.000),( 700374.000,3665994.000)) == "exe2/data/p1crop.jpg"
 
 
 def test_color():
